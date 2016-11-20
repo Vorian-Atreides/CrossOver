@@ -1,0 +1,34 @@
+@startuml
+
+class Metric {
+    + id
+    + date
+    + client_key
+}
+
+class Memory {
+    + id
+    + value
+    
+    + metric_id
+}
+
+class Cpu {
+    + id
+    + value
+    
+    + metric_id
+}
+
+class Process {
+    + id
+    + value
+    
+    + metric_id
+}
+
+Metric *-- Cpu
+Metric *-- Memory
+Metric *-- Process
+
+@enduml

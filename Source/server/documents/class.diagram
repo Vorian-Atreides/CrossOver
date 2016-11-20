@@ -1,0 +1,50 @@
+@startuml
+
+interface IXmlModel {
+    void fromXml(xml_node<> *xml);
+}
+
+class Alert {
+    - type
+    - limit
+}
+
+class Client {
+    - key
+    - mail
+    - std::list<Alert>
+}
+
+class MetricUpdate {
+    - key
+    - memory
+    - cpu
+    - processes
+}
+
+Client *-- Alert
+IXmlModel <|-- Alert
+IXmlModel <|-- Client
+
+abstract AWorker {
+}
+
+interface IRunnable {
+    void run();
+}
+
+class Server {
+}
+
+class AlertWorker {
+}
+
+class DataWorker {
+}
+
+IRunnable <|-- AWorker
+IRunnable <|-- Server
+AWorker <|-- DataWorker
+AWorker <|-- AlertWorker
+
+@enduml

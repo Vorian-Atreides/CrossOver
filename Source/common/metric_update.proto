@@ -1,0 +1,8 @@
+
+message MetricUpdate {
+    required string key         = 1;
+
+    optional float  memory      = 2;
+    optional float  cpu         = 3;
+    optional int32  processes   = 4;
+}

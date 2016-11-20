@@ -1,0 +1,42 @@
+version: '2'
+
+services:
+    mysql:
+        hostname: mysql
+        build:
+            context: .
+            dockerfile: ./dockerfiles/mysql
+        environment:
+            - MYSQL_DATABASE=crossover
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_USER=user
+            - MYSQL_PASSWORD=password
+        ports:
+            - "3306:3306"
+
+    mail:
+        image: tvial/docker-mailserver:latest
+        hostname: mail
+        domainname: cross.com
+        container_name: mail
+        ports:
+            - "25:25"
+            - "143:143"
+            - "587:587"
+            - "993:993"
+        volumes:
+            - ./resources/mail-server/:/tmp/docker-mailserver/
+        environment:
+            - POSTMASTER_ADDRESS=support@cross.com
+            - PERMIT_DOCKER=host
+
+    standalone:
+        build:
+            context: .
+            dockerfile: ./dockerfiles/server
+        ports:
+            - "4000:4000"
+        command: ./server standalone
+        links:
+            - mysql
+            - mail

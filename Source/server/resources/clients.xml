@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clients>
+    <client key="client1" mail="asa@asda.com">
+        <alert type="memory" limit="50%"/>
+        <alert type="cpu" limit="20%"/>
+        <alert type="processes" limit="50"/>        
+    </client>
+    <client key="client2" mail="support@asda.com">
+        <alert type="memory" limit="60%"/>
+        <alert type="cpu" limit="20%"/>
+        <alert type="processes" limit="310"/>        
+    </client>
+</clients>

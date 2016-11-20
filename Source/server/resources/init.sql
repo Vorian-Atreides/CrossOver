@@ -1,0 +1,47 @@
+CREATE TABLE metrics
+(
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    client_key VARCHAR(100) NOT NULL,
+
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE memories
+(
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    metric_id INT UNSIGNED NOT NULL,
+    value FLOAT NOT NULL,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY (metric_id)
+        REFERENCES metrics(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+CREATE TABLE cpu
+(
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    metric_id INT UNSIGNED NOT NULL,    
+    value FLOAT NOT NULL,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY (metric_id)
+        REFERENCES metrics(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+CREATE TABLE processes
+(
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    metric_id INT UNSIGNED NOT NULL,    
+    value INT NOT NULL,
+
+    PRIMARY KEY(id),
+    FOREIGN KEY (metric_id)
+        REFERENCES metrics(id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);

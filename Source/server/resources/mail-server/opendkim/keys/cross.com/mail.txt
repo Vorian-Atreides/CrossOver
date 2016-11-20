@@ -1,0 +1,2 @@
+mail._domainkey	IN	TXT	( "v=DKIM1; k=rsa; "
+	  "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDsh8VWhdWbzX62Mvvg06zFMTAJUJWa2upnww/Y3bDXq9XLDKrz2vfFjoRB9gGY0K7yC94Lcwx2GgUvZ+HEUIRIGFkPxQ/OrGuiuzWobVRRGzM1U2Ao5SPAAj/QoRAeVEfuKAfIr9LirzcKYw+x7x8BftfnLwBnUqx2uGy9U2itDQIDAQAB" )  ; ----- DKIM key mail for cross.com

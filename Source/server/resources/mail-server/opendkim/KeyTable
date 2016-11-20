@@ -1,0 +1,1 @@
+mail._domainkey.cross.com cross.com:mail:/etc/opendkim/keys/cross.com/mail.private
