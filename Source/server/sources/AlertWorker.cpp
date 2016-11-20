@@ -12,7 +12,6 @@
 
 #include "AlertWorker.h"
 
-
 /*
 ** LibCurl callback to build the email
 ** payload

@@ -27,3 +27,16 @@ add_executable(${ProjectName}
                ${Includes})
 set_property(TARGET ${ProjectName} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${ProjectName} ${Libraries})
+
+# Add test
+# add_executable(${ProjectName}_test
+#                ${SourceDir}/AlertWorker.cpp
+#                ${IncludeDir}/AlertWorker.h
+#                ${Protos}
+#                ${Tests})
+# target_link_libraries(${ProjectName}_test ${Libraries})
+# enable_testing()
+
+# add_test(
+
+# )

@@ -30,14 +30,28 @@ ENDIF()
 add_executable(${ProjectName}
                ${Sources}
                ${Includes}
-               ${Protos}
-               ${CMAKE_SOURCE_DIR}/tests/example.cpp)
+               ${Protos})
 set_property(TARGET ${ProjectName} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${ProjectName} ${Libraries})
 
+## Add tests
+add_executable(${ProjectName}_test
+               ${SourceDir}/SigarWrapper.cpp
+               ${IncludeDir}/SigarWrapper.h
+               ${Protos}
+               ${Tests})
+target_link_libraries(${ProjectName}_test ${Libraries})
 enable_testing()
-GTEST_ADD_TESTS(${ProjectName} "" ${CMAKE_SOURCE_DIR}/tests/example.cpp)
+
 add_test(
-    ${CMAKE_SOURCE_DIR}/tests/example.cpp
-    ${ProjectName}
+    CpuTest
+    ${ProjectName}_test
+)
+add_test(
+    MemoryTest
+    ${ProjectName}_test
+)
+add_test(
+    ProcessesTest
+    ${ProjectName}_test
 )
