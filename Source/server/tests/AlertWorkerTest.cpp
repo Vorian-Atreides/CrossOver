@@ -2,6 +2,8 @@
 
 #include "AlertWorker.h"
 
+#define LOCALHOST "localhost"
+
 static std::shared_ptr<Client> initClient(std::string const &alertType, int alertLimit)
 {
     std::shared_ptr<Client> client = std::shared_ptr<Client>(new Client());
@@ -18,7 +20,7 @@ static std::shared_ptr<Client> initClient(std::string const &alertType, int aler
 TEST(AlertWorkerTest, ShouldRaiseAnAlert)
 {
     zmqpp::context context;
-    AlertWorker worker(context);
+    AlertWorker worker(context, LOCALHOST);
 
     // Check the memory alert    
     MetricUpdate message = MetricUpdate();
@@ -45,7 +47,7 @@ TEST(AlertWorkerTest, ShouldRaiseAnAlert)
 TEST(AlertWorkerTest, ShouldNotRaiseAnAlert)
 {
     zmqpp::context context;
-    AlertWorker worker(context);
+    AlertWorker worker(context, LOCALHOST);
 
     // Check the memory alert    
     MetricUpdate message = MetricUpdate();
@@ -81,7 +83,7 @@ static std::list<std::shared_ptr<Alert>> initAlerts(std::string const &alertType
 TEST(AlertWorkerTest, FindAlertByKey)
 {
     zmqpp::context context;
-    AlertWorker worker(context);
+    AlertWorker worker(context, LOCALHOST);
 
     std::list<std::shared_ptr<Alert>> alerts = initAlerts("memory");
     ASSERT_EQ(worker.findAlertByKey(alerts, "memory"), alerts.cbegin());
@@ -99,7 +101,7 @@ TEST(AlertWorkerTest, FindAlertByKey)
 TEST(AlertWorkerTest, FindNotAlertByKey)
 {
     zmqpp::context context;
-    AlertWorker worker(context);
+    AlertWorker worker(context, LOCALHOST);
 
     std::list<std::shared_ptr<Alert>> alerts = initAlerts("crossover");
     ASSERT_EQ(worker.findAlertByKey(alerts, "memory"), alerts.cend());
@@ -112,13 +114,12 @@ TEST(AlertWorkerTest, FindNotAlertByKey)
 
     alerts = initAlerts("other");
     ASSERT_EQ(worker.findAlertByKey(alerts, "memory"), alerts.cend());
-
 }
 
 TEST(AlertWorkerTest, ParseValidClients)
 {
     zmqpp::context context;
-    AlertWorker worker(context);
+    AlertWorker worker(context, LOCALHOST);
 
     std::list<std::shared_ptr<Client>> clients = std::list<std::shared_ptr<Client>>();
     std::string xml = "<clients>" \
@@ -140,7 +141,7 @@ TEST(AlertWorkerTest, ParseValidClients)
 TEST(AlertWorkerTest, ParseInvalidClients)
 {
     zmqpp::context context;
-    AlertWorker worker(context);
+    AlertWorker worker(context, LOCALHOST);
 
     std::list<std::shared_ptr<Client>> clients = std::list<std::shared_ptr<Client>>();
     std::string xml = "";

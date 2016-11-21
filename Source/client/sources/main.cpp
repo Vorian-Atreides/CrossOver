@@ -11,7 +11,7 @@
 #include "Request.h"
 #include "SigarWrapper.h"
 
-#define USAGE "./client $KeyName"
+#define USAGE "./client $KeyName $ServerHost"
 
 /*
 ** Analyze the machine system's usage
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 {
     zmqpp::context context;
 
-    if (argc != 2)
+    if (argc != 3)
     {
         std::cout << USAGE << std::endl;
         return -1;
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
         ** and close the socket
         */
         {
-            Request request(context);
+            Request request(context, argv[2]);
             MetricUpdate message = analyze();
             message.set_key(key);
             request.send(message);

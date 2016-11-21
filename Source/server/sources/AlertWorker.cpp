@@ -35,13 +35,9 @@ static size_t buildPayload(void *ptr, size_t size, size_t nmemb, void *data)
     return buffer.length();
 }
 
-AlertWorker::AlertWorker() :
-    AlertWorker(zmqpp::context())
-{
-}
-
-AlertWorker::AlertWorker(zmqpp::context const &context) :
-    AWorker(context, "4002")
+AlertWorker::AlertWorker(zmqpp::context const &context,
+                         std::string const &serverHost) :
+    AWorker(context, serverHost, "4002")
 {
 }
 

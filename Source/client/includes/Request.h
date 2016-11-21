@@ -14,13 +14,10 @@
 class Request
 {
 private:
-    static std::string HOST;
-
-private:
     zmqpp::socket _pusher;
 
 public:
-    Request(zmqpp::context const &context);
+    Request(zmqpp::context const &context, std::string const &serverHost);
     ~Request();
 
 public:

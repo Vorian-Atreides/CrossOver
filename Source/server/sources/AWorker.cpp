@@ -4,10 +4,11 @@
 
 #include "AWorker.h"
 
-AWorker::AWorker(zmqpp::context const &context, std::string const &port) :
+AWorker::AWorker(zmqpp::context const &context, std::string const &serverHost,
+                 std::string const &port) :
     _puller(context, zmqpp::socket_type::pull)
 {
-    _puller.connect("tcp://localhost:" + port);
+    _puller.connect("tcp://" + serverHost + ":" + port);
 }
 
 AWorker::~AWorker()

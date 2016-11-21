@@ -4,12 +4,10 @@
 
 #include "Request.h"
 
-std::string Request::HOST = "tcp://localhost:4000";
-
-Request::Request(zmqpp::context const &context) :
+Request::Request(zmqpp::context const &context, std::string const &serverHost) :
     _pusher(context, zmqpp::socket_type::push)
 {
-    _pusher.connect(HOST);
+    _pusher.connect("tcp://" + serverHost + ":4000");
 }
 
 Request::~Request()

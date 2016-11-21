@@ -24,11 +24,7 @@ public:
     ** the context is thread safe and multiplex the
     ** socket
     */
-    DataWorker(zmqpp::context const &context);
-    /*
-    ** Create an process independant context
-    */    
-    DataWorker();
+    DataWorker(zmqpp::context const &context, std::string const &serverHost);
     ~DataWorker();
 
 protected:

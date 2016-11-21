@@ -13,6 +13,7 @@
 #define HELPER      "./server (standalone|cluster)"
 #define STANDALONE  "standalone"
 #define CLUSTER     "cluster"
+#define LOCALHOST   "localhost"
 #define POOL_SIZE   2
 
 typedef void (*option)();
@@ -28,13 +29,13 @@ static void cluster()
 
 static void runAlertWorker(zmqpp::context const *context)
 {
-    AlertWorker worker(*context);
+    AlertWorker worker(*context, LOCALHOST);
     worker.run();
 }
 
 static void runDataWorker(zmqpp::context const *context)
 {
-    DataWorker worker(*context);
+    DataWorker worker(*context, LOCALHOST);
     worker.run();
 }
 

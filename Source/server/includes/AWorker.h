@@ -24,7 +24,8 @@ public:
     /*
     ** Initialize the socket's puller.
     */
-    AWorker(zmqpp::context const &context, std::string const &port);
+    AWorker(zmqpp::context const &context, std::string const &serverHost,
+            std::string const &port);
     virtual ~AWorker();
 
 public:

@@ -10,12 +10,9 @@
 
 #include "DataWorker.h"
 
-DataWorker::DataWorker() : DataWorker(zmqpp::context())
-{
-}
-
-DataWorker::DataWorker(zmqpp::context const &context) :
-    AWorker(context, "4001")
+DataWorker::DataWorker(zmqpp::context const &context,
+                       std::string const &serverHost) :
+    AWorker(context, serverHost, "4001")
 {
     _connection = NULL;
 }
@@ -59,7 +56,7 @@ bool DataWorker::connectToMysql()
         if (driver)
         {
             _connection = std::shared_ptr<sql::Connection>(
-                driver->connect("tcp://mysql:3306", "user", "password"));
+                driver->connect("tcp://localhost:3306", "user", "password"));
             return true;
         }
     }
@@ -74,7 +71,7 @@ int DataWorker::insertMetric(std::string const &key)
 {
     if (!_connection && !connectToMysql())
     {
-        //TODO add log        
+        //TODO add log
         return -1;
     }
 
@@ -82,21 +79,14 @@ int DataWorker::insertMetric(std::string const &key)
     std::unique_ptr<sql::Statement> statement(_connection->createStatement());
 
     request << "INSERT INTO metrics(client_key) VALUES('" << key << "')";
-    if (!statement->execute("USE crossover"))
-    {
-        //TODO add log
-        return -1;
-    }
-    if (!statement->execute(request.str()))
-    {
-        //TODO add log
-        return -1;
-    }
+    statement->execute("USE crossover");
+    statement->execute(request.str());
+
     std::unique_ptr<sql::ResultSet> result(statement->executeQuery("SELECT LAST_INSERT_ID()"));
 
     if (result->next())
         return result->getInt(1);
-    //TODO add log    
+    //TODO add log
     return -1;
 }
 
@@ -104,7 +94,7 @@ bool DataWorker::insertMemory(int metricId, float value)
 {
     if (!_connection && !connectToMysql())
     {
-        //TODO add log        
+        //TODO add log
         return false;
     }
 
@@ -113,16 +103,9 @@ bool DataWorker::insertMemory(int metricId, float value)
 
     request << "INSERT INTO memories(metric_id, value) VALUES('"
         << metricId << "', '" << value << "')";
-    if (!statement->execute("USE crossover"))
-    {
-        //TODO add log
-        return false;
-    }
-    if (!statement->execute(request.str()))
-    {
-        //TODO add log
-        return false;
-    }
+    statement->execute("USE crossover");
+    statement->execute(request.str());
+    
     return true;
 }
 
@@ -139,16 +122,8 @@ bool DataWorker::insertCpu(int metricId, float value)
 
     request << "INSERT INTO cpu(metric_id, value) VALUES('"
         << metricId << "', '" << value << "')";
-    if (!statement->execute("USE crossover"))
-    {
-        //TODO add log
-        return false;
-    }
-    if (!statement->execute(request.str()))
-    {
-        //TODO add log
-        return false;
-    }
+    statement->execute("USE crossover");
+    statement->execute(request.str());
     return true;
 }
 
@@ -165,15 +140,7 @@ bool DataWorker::insertProcesses(int metricId, int value)
 
     request << "INSERT INTO processes(metric_id, value) VALUES('"
         << metricId << "', '" << value << "')";
-    if (!statement->execute("USE crossover"))
-    {
-        //TODO add log
-        return false;        
-    }
-    if (!statement->execute(request.str()))
-    {
-        //TODO add log
-        return false;
-    }
+    statement->execute("USE crossover");
+    statement->execute(request.str());
     return true;
 }

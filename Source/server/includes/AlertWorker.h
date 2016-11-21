@@ -35,11 +35,7 @@ public:
     ** the context is thread safe and multiplex the
     ** socket
     */
-    AlertWorker(zmqpp::context const &context);
-    /*
-    ** Create an process independant context
-    */
-    AlertWorker();
+    AlertWorker(zmqpp::context const &context, std::string const &serverHost);
     ~AlertWorker() = default;
 
 protected:
