@@ -7,6 +7,8 @@
 
 #include <memory>
 
+#include <gtest/gtest_prod.h>
+
 #include "models/Client.h"
 #include "AWorker.h"
 
@@ -19,6 +21,14 @@
 */
 class AlertWorker: public AWorker
 {
+private:
+    FRIEND_TEST(AlertWorkerTest, ShouldRaiseAnAlert);
+    FRIEND_TEST(AlertWorkerTest, ShouldNotRaiseAnAlert);
+    FRIEND_TEST(AlertWorkerTest, FindAlertByKey);
+    FRIEND_TEST(AlertWorkerTest, FindNotAlertByKey);
+    FRIEND_TEST(AlertWorkerTest, ParseValidClients);
+    FRIEND_TEST(AlertWorkerTest, ParseInvalidClients);
+
 public:
     /*
     ** Provide a shared context in the application,
@@ -43,11 +53,13 @@ private:
     bool shoudlRaiseAnAlert(MetricUpdate const &message,
                             std::shared_ptr<Client> const &client) const;
     // Search the alert for a specific key: "memory", "cpu", ...
-    std::shared_ptr<Alert> const &findAlertByKey(
+    std::list<std::shared_ptr<Alert>>::const_iterator findAlertByKey(
                             std::list<std::shared_ptr<Alert>> const &items,
                             std::string const &key) const;
     // Parse the config file with the list of clients
     void parseClientsFile(std::list<std::shared_ptr<Client>> &clients) const;
+    void parseClients(std::list<std::shared_ptr<Client>> &clients,
+                      std::string const &xml) const;
 };
 
 #endif //ALERT_WORKER_H

@@ -47,6 +47,13 @@ void Alert::setLimit(int value)
 
 void Alert::fromXml(rapidxml::xml_node<> *xml)
 {
+    if (xml->first_attribute(TYPE.c_str()) == NULL ||
+        xml->first_attribute(LIMIT.c_str()) == NULL)
+    {
+        // TODO add log
+        return;
+    }
+
     _type = xml->first_attribute(TYPE.c_str())->value();
     /*
     ** We assume the limit as the same unit

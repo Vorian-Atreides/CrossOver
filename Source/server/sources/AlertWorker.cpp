@@ -3,11 +3,13 @@
 */
 
 #include <stdlib.h>
-#include <curl/curl.h>
-
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <iostream>
+
+#include <curl/curl.h>
 #include <rapidxml/rapidxml.hpp>
 
 #include "AlertWorker.h"
@@ -91,48 +93,49 @@ void AlertWorker::sendEmail(MetricUpdate const &message,
     }
     curl_slist_free_all(recipients);
     curl_easy_cleanup(curl);
+    std::cout << "Alert" << std::endl;
 }
 
 bool AlertWorker::shoudlRaiseAnAlert(MetricUpdate const &message,
                             std::shared_ptr<Client> const &client) const
 {
+    std::list<std::shared_ptr<Alert>> const &alerts = client->getAlerts();
     if (message.has_cpu())
     {
-        std::shared_ptr<Alert> const &alert = findAlertByKey(client->getAlerts(), "cpu");
-        if (message.cpu() > alert->getLimit())
+        std::list<std::shared_ptr<Alert>>::const_iterator const &alert = findAlertByKey(alerts, "cpu");
+        if (alert != alerts.cend() && message.cpu() > (*alert)->getLimit())
             return true;
     }
     if (message.has_memory())
     {
-        std::shared_ptr<Alert> const &alert = findAlertByKey(client->getAlerts(), "memory");
-        if (message.memory() > alert->getLimit())
+        std::list<std::shared_ptr<Alert>>::const_iterator const &alert = findAlertByKey(alerts, "memory");
+        if (alert != alerts.cend() && message.memory() > (*alert)->getLimit())
             return true;
     }
     if (message.has_processes())
     {
-        std::shared_ptr<Alert> const &alert = findAlertByKey(client->getAlerts(), "processes");
-        if (message.processes() > alert->getLimit())
+        std::list<std::shared_ptr<Alert>>::const_iterator const &alert = findAlertByKey(alerts, "processes");        
+        if (alert != alerts.cend() && message.processes() > (*alert)->getLimit())
             return true;
     }
     return false;
 }
 
-std::shared_ptr<Alert> const &AlertWorker::findAlertByKey(
+std::list<std::shared_ptr<Alert>>::const_iterator AlertWorker::findAlertByKey(
                             std::list<std::shared_ptr<Alert>> const &items,
                             std::string const &key) const
 {
-    for (std::shared_ptr<Alert> const &alert: items)
+    for (std::list<std::shared_ptr<Alert>>::const_iterator it = items.cbegin();
+        it != items.cend(); ++it)
     {
-        if (alert->getType() == key)
-            return alert;
+        if ((*it)->getType() == key)
+            return it;
     }
+    return items.cend();
 }
 
 void AlertWorker::parseClientsFile(std::list<std::shared_ptr<Client>> &clients) const
 {
-    rapidxml::xml_document<> document;
-    rapidxml::xml_node<> *root;
-
     // Read the file
     std::ifstream file("../resources/clients.xml");
     if (!file.is_open())
@@ -140,19 +143,39 @@ void AlertWorker::parseClientsFile(std::list<std::shared_ptr<Client>> &clients) 
        //TODO add log
         return;
     }
-    std::vector<char> buffer((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    std::string xml((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    file.close();
+    parseClients(clients, xml);
+}
+
+void AlertWorker::parseClients(std::list<std::shared_ptr<Client>> &clients,
+                                std::string const &xml) const
+{
+    rapidxml::xml_document<> document;
+    rapidxml::xml_node<> *root;
+
+    std::vector<char> buffer(xml.begin(), xml.end());
 	buffer.push_back('\0');
-    // Initialize the parser
+
     document.parse<0>(&buffer[0]);
     root = document.first_node("clients");
+    if (root == NULL)
+    {
+        //TODO add log
+        return;
+    }
     // Start the parsing and mapping
     clients.clear();
     for (rapidxml::xml_node<> *client = root->first_node("client"); client;
         client = client->next_sibling())
     {
+        if (client == NULL)
+        {
+            //TODO add log            
+            continue;
+        }
         Client *tmp = new Client();
         tmp->fromXml(client);
         clients.push_back(std::shared_ptr<Client>(tmp));
     }
-    file.close();
 }
