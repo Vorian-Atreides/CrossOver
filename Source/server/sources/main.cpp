@@ -46,12 +46,7 @@ static void standalone()
     std::list<std::thread> pool;
 
     for (int i = 0; i < POOL_SIZE; ++i)
-    {
         pool.push_back(std::thread(runDataWorker, &context));
-        // We need a sleep, otherwise MysqlDriver will internally segv
-        // while opening a connection
-        sleep(1);
-    }
     for (int i = 0; i < POOL_SIZE; ++i)
         pool.push_back(std::thread(runAlertWorker, &context));    
     
