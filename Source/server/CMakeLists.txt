@@ -36,7 +36,8 @@ add_executable(${ProjectName}_test
                 ${IncludeDir}/AlertWorker.h ${IncludeDir}/AWorker.h ${IncludeDir}/DataWorker.h ${IncludeDir}/Server.h
                 ${IncludeDir}/models/Alert.h ${IncludeDir}/models/Client.h ${IncludeDir}/models/metric_update.pb.h
                 ${IncludeDir}/IRunnable.h ${IncludeDir}/models/IXmlModel.h ${IncludeDir}/rapidxml/rapidxml_utils.hpp
-                ${IncludeDir}/rapidxml/rapidxml.hpp ${IncludeDir}/rapidxml/rapidxml_iterators.hpp ${IncludeDir}/rapidxml/rapidxml_print.hpp
+                ${IncludeDir}/rapidxml/rapidxml.hpp ${IncludeDir}/rapidxml/rapidxml_iterators.hpp
+                ${IncludeDir}/rapidxml/rapidxml_print.hpp
 
                 ${Protos}
                 ${Tests})

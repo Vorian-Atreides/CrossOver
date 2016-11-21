@@ -19,6 +19,11 @@
 class Server: public IRunnable
 {
 private:
+    static std::string PULLER_PORT;
+    static std::string DATA_PUSHER_PORT;
+    static std::string ALERT_PUSHER_PORT;
+
+private:
     zmqpp::socket   _puller;
     zmqpp::socket   _dataPusher;
     zmqpp::socket   _alertPusher;    

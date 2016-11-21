@@ -16,6 +16,12 @@
 class DataWorker : public AWorker
 {
 private:
+    static std::string DB_CONN;
+    static std::string DB_USER;
+    static std::string DB_PASSWORD;
+    static std::string PUSHER_PORT;
+
+private:
     std::shared_ptr<sql::Connection> _connection;
 
 public:

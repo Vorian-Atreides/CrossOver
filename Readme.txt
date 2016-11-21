@@ -69,7 +69,7 @@ Firstly you should install cmake (version 3 at least):
 The project require to have C++ (version 11 at least):
 > https://gcc.gnu.org/
 
-For the network communication, you will need ZeroMQ:
+For the network communication, you will need ZeroMQ (version 3 at least):
 > http://zeromq.org/area:download
 
 And its CPP's binding:
@@ -78,9 +78,19 @@ And its CPP's binding:
 For the serialization the message, you will require the google ProtocolBuffer:
 > https://developers.google.com/protocol-buffers/
 
-And finaly, to analyse the computer's system in any platform,
+To analyse the computer's system in any platform,
 you will need to build and install Sigar API:
 > https://github.com/hyperic/sigar 
+
+And finally, for the unit tests, I used GoogleTest library:
+> https://github.com/google/googletest
+
+Of course, the installation will depends of your current Operating System,
+if you can use the package manager from your Operating System, feel free to use it
+(but be careful to take the development version).
+Otherwise, you should be able to build the project from their github.
+
+I wish you good luck for the installation part !
 
 ## Database configuration
 

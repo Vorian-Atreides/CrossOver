@@ -29,6 +29,16 @@ private:
     FRIEND_TEST(AlertWorkerTest, ParseValidClients);
     FRIEND_TEST(AlertWorkerTest, ParseInvalidClients);
 
+private:
+    static std::string PUSHER_PORT;
+    static std::string CLIENT_FILE;
+    static std::string CLIENTS;
+    static std::string CLIENT;
+    static std::string SMTP_USER;
+    static std::string SMTP_PASSWORD;
+    static std::string SMTP_CONN;
+    static std::string SMTP_FROM;
+
 public:
     /*
     ** Provide a shared context in the application,

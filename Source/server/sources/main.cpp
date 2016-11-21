@@ -13,7 +13,7 @@
 #define HELPER      "./server (standalone|cluster)"
 #define STANDALONE  "standalone"
 #define CLUSTER     "cluster"
-#define LOCALHOST   "localhost"
+#define LOCALHOST   "0.0.0.0"
 #define POOL_SIZE   2
 
 typedef void (*option)();

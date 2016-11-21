@@ -14,21 +14,21 @@ services:
         ports:
             - "3306:3306"
 
-    # mail:
-    #     image: tvial/docker-mailserver:latest
-    #     hostname: mail
-    #     domainname: cross.com
-    #     container_name: mail
-    #     ports:
-    #         - "25:25"
-    #         - "143:143"
-    #         - "587:587"
-    #         - "993:993"
-    #     volumes:
-    #         - ./resources/mail-server/:/tmp/docker-mailserver/
-    #     environment:
-    #         - POSTMASTER_ADDRESS=support@cross.com
-    #         - PERMIT_DOCKER=host
+    mail:
+        image: tvial/docker-mailserver:latest
+        hostname: mail
+        domainname: cross.com
+        container_name: mail
+        ports:
+            - "25:25"
+            - "143:143"
+            - "587:587"
+            - "993:993"
+        volumes:
+            - ./resources/mail-server/:/tmp/docker-mailserver/
+        environment:
+            - POSTMASTER_ADDRESS=support@cross.com
+            - PERMIT_DOCKER=host
 
     standalone:
         build:
@@ -39,4 +39,4 @@ services:
         command: ./server standalone
         links:
             - mysql
-#            - mail
+            - mail

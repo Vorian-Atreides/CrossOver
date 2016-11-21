@@ -6,12 +6,20 @@ RUN apt-get install -y  \
     libmysqlcppconn-dev \
     libprotobuf-dev
 
+WORKDIR /etc
+RUN wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
+RUN tar xf release-1.8.0.tar.gz
+WORKDIR /etc/googletest-release-1.8.0/
+RUN cmake -DBUILD_SHARED_LIBS=ON .
+RUN make
+RUN make install
+
 RUN mkdir /home/app/
 RUN mkdir /home/app/build
-RUN echo "test $option"
 
 COPY ./sources/ /home/app/sources/
 COPY ./includes/ /home/app/includes/
+COPY ./resources/ /home/app/resources/
 COPY ./cmakes/ /home/app/cmakes/
 COPY ./CMakeLists.txt /home/app
 

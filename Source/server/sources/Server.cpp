@@ -4,6 +4,10 @@
 
 #include "Server.h"
 
+std::string Server::PULLER_PORT         = "4000";
+std::string Server::DATA_PUSHER_PORT    = "4001";
+std::string Server::ALERT_PUSHER_PORT   = "4002";
+
 Server::Server() : Server(zmqpp::context())
 {
 }
@@ -13,9 +17,9 @@ Server::Server(zmqpp::context const &context) :
     _dataPusher(context, zmqpp::socket_type::push),
     _alertPusher(context, zmqpp::socket_type::push)
 {
-    _puller.bind("tcp://*:4000");
-    _dataPusher.bind("tcp://*:4001");
-    _alertPusher.bind("tcp://*:4002");    
+    _puller.bind("tcp://*:" + PULLER_PORT);
+    _dataPusher.bind("tcp://*:" + DATA_PUSHER_PORT);
+    _alertPusher.bind("tcp://*:" + ALERT_PUSHER_PORT);
 }
 
 Server::~Server()

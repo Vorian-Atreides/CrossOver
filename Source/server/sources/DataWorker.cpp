@@ -10,9 +10,14 @@
 
 #include "DataWorker.h"
 
+std::string DataWorker::DB_CONN     = "tcp://mysql:3306";
+std::string DataWorker::DB_USER     = "user";
+std::string DataWorker::DB_PASSWORD = "password";
+std::string DataWorker::PUSHER_PORT = "4001";
+
 DataWorker::DataWorker(zmqpp::context const &context,
                        std::string const &serverHost) :
-    AWorker(context, serverHost, "4001")
+    AWorker(context, serverHost, PUSHER_PORT)
 {
     _connection = NULL;
 }
@@ -56,7 +61,7 @@ bool DataWorker::connectToMysql()
         if (driver)
         {
             _connection = std::shared_ptr<sql::Connection>(
-                driver->connect("tcp://localhost:3306", "user", "password"));
+                driver->connect(DB_CONN, DB_USER, DB_PASSWORD));
             return true;
         }
     }

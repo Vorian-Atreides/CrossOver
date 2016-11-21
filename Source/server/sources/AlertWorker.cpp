@@ -14,6 +14,15 @@
 
 #include "AlertWorker.h"
 
+std::string AlertWorker::PUSHER_PORT    = "4002";
+std::string AlertWorker::CLIENT_FILE    = "../resources/clients.xml";
+std::string AlertWorker::CLIENTS        = "clients";
+std::string AlertWorker::CLIENT         = "client";
+std::string AlertWorker::SMTP_USER      = "support@cross.com";
+std::string AlertWorker::SMTP_PASSWORD  = "12345";
+std::string AlertWorker::SMTP_CONN      = "smtp://mail:25";
+std::string AlertWorker::SMTP_FROM      = "support@cross.com";
+
 /*
 ** LibCurl callback to build the email
 ** payload
@@ -37,7 +46,7 @@ static size_t buildPayload(void *ptr, size_t size, size_t nmemb, void *data)
 
 AlertWorker::AlertWorker(zmqpp::context const &context,
                          std::string const &serverHost) :
-    AWorker(context, serverHost, "4002")
+    AWorker(context, serverHost, PUSHER_PORT)
 {
 }
 
@@ -75,10 +84,10 @@ void AlertWorker::sendEmail(MetricUpdate const &message,
         //TODO add log
         return;
     }
-    curl_easy_setopt(curl, CURLOPT_USERNAME, "support@cross.com");
-    curl_easy_setopt(curl, CURLOPT_PASSWORD, "12345");
-    curl_easy_setopt(curl, CURLOPT_URL, "smtp://mail:25");
-    curl_easy_setopt(curl, CURLOPT_MAIL_FROM, "support@cross.com");
+    curl_easy_setopt(curl, CURLOPT_USERNAME, SMTP_USER.c_str());
+    curl_easy_setopt(curl, CURLOPT_PASSWORD, SMTP_PASSWORD.c_str());
+    curl_easy_setopt(curl, CURLOPT_URL, SMTP_CONN.c_str());
+    curl_easy_setopt(curl, CURLOPT_MAIL_FROM, SMTP_FROM.c_str());
     recipients = curl_slist_append(recipients, client->getMail().c_str());
     curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
     curl_easy_setopt(curl, CURLOPT_READFUNCTION, &buildPayload);
@@ -133,7 +142,7 @@ std::list<std::shared_ptr<Alert>>::const_iterator AlertWorker::findAlertByKey(
 void AlertWorker::parseClientsFile(std::list<std::shared_ptr<Client>> &clients) const
 {
     // Read the file
-    std::ifstream file("../resources/clients.xml");
+    std::ifstream file(CLIENT_FILE);
     if (!file.is_open())
     {
        //TODO add log
@@ -154,7 +163,7 @@ void AlertWorker::parseClients(std::list<std::shared_ptr<Client>> &clients,
 	buffer.push_back('\0');
 
     document.parse<0>(&buffer[0]);
-    root = document.first_node("clients");
+    root = document.first_node(CLIENTS.c_str());
     if (root == NULL)
     {
         //TODO add log
@@ -162,7 +171,7 @@ void AlertWorker::parseClients(std::list<std::shared_ptr<Client>> &clients,
     }
     // Start the parsing and mapping
     clients.clear();
-    for (rapidxml::xml_node<> *client = root->first_node("client"); client;
+    for (rapidxml::xml_node<> *client = root->first_node(CLIENT.c_str()); client;
         client = client->next_sibling())
     {
         if (client == NULL)

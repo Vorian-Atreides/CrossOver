@@ -5,12 +5,6 @@
 cmake_minimum_required(VERSION 3.0)
 set(ProjectName client)
 
-SET(TEST false CACHE BOOL "Embbed the tests")
-message(STATUS ${TEST})
-# add_executable(${ProjectName} ${CMAKE_SOURCE_DIR}/tests/test.cpp)
-# find_package(GTest REQUIRED)
-# include_directories(${GTEST_INCLUDE_DIR})
-
 ## Define the project
 project(${ProjectName} C CXX)
 set(CMAKE_BUILD_TYPE Debug)
