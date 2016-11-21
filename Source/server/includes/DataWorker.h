@@ -40,14 +40,16 @@ protected:
     void task(MetricUpdate const &message);
 
 private:
+    bool connectToMysql();
+
     // Insert a new row in the table metrics
     int insertMetric(std::string const &key);
     // Insert a new row in the table memories
-    void insertMemory(int metricId, float value);
+    bool insertMemory(int metricId, float value);
     // Insert a new row in the table cpu
-    void insertCpu(int metricId, float value);
+    bool insertCpu(int metricId, float value);
     // Insert a new row in the table processes
-    void insertProcesses(int metricId, int value);
+    bool insertProcesses(int metricId, int value);
 };
 
 #endif //DATA_WORKER_H

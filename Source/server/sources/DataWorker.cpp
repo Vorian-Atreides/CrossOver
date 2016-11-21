@@ -17,22 +17,13 @@ DataWorker::DataWorker() : DataWorker(zmqpp::context())
 DataWorker::DataWorker(zmqpp::context const &context) :
     AWorker(context, "4001")
 {
-    try
-    {
-        auto driver = sql::mysql::get_mysql_driver_instance();
-        if (driver)
-            _connection = std::shared_ptr<sql::Connection>(
-                driver->connect("tcp://mysql:3306", "user", "password"));
-    }
-    catch (sql::SQLException e)
-    {
-        //TODO add log
-    }
+    _connection = NULL;
 }
 
 DataWorker::~DataWorker()
 {
-    _connection->close();
+    if (_connection)
+        _connection->close();
 }
 
 /*
@@ -41,12 +32,6 @@ DataWorker::~DataWorker()
 
 void DataWorker::task(MetricUpdate const &message)
 {
-    if (!_connection)
-    {
-        //TODO add log        
-        return;
-    }
-
     int newId = insertMetric(message.key());
     if (newId == -1)
     {
@@ -66,14 +51,47 @@ void DataWorker::task(MetricUpdate const &message)
 ** Private
 */
 
+bool DataWorker::connectToMysql()
+{
+    try
+    {
+        auto driver = sql::mysql::get_mysql_driver_instance();
+        if (driver)
+        {
+            _connection = std::shared_ptr<sql::Connection>(
+                driver->connect("tcp://mysql:3306", "user", "password"));
+            return true;
+        }
+    }
+    catch (sql::SQLException e)
+    {
+        //TODO add log
+    }
+    return false;
+}
+
 int DataWorker::insertMetric(std::string const &key)
 {
+    if (!_connection && !connectToMysql())
+    {
+        //TODO add log        
+        return -1;
+    }
+
     std::stringstream request;
     std::unique_ptr<sql::Statement> statement(_connection->createStatement());
 
     request << "INSERT INTO metrics(client_key) VALUES('" << key << "')";
-    statement->execute("USE crossover");
-    statement->execute(request.str());
+    if (!statement->execute("USE crossover"))
+    {
+        //TODO add log
+        return -1;
+    }
+    if (!statement->execute(request.str()))
+    {
+        //TODO add log
+        return -1;
+    }
     std::unique_ptr<sql::ResultSet> result(statement->executeQuery("SELECT LAST_INSERT_ID()"));
 
     if (result->next())
@@ -82,35 +100,80 @@ int DataWorker::insertMetric(std::string const &key)
     return -1;
 }
 
-void DataWorker::insertMemory(int metricId, float value)
+bool DataWorker::insertMemory(int metricId, float value)
 {
+    if (!_connection && !connectToMysql())
+    {
+        //TODO add log        
+        return false;
+    }
+
     std::stringstream request;
     std::unique_ptr<sql::Statement> statement(_connection->createStatement());
 
     request << "INSERT INTO memories(metric_id, value) VALUES('"
         << metricId << "', '" << value << "')";
-    statement->execute("USE crossover");
-    statement->execute(request.str());
+    if (!statement->execute("USE crossover"))
+    {
+        //TODO add log
+        return false;
+    }
+    if (!statement->execute(request.str()))
+    {
+        //TODO add log
+        return false;
+    }
+    return true;
 }
 
-void DataWorker::insertCpu(int metricId, float value)
+bool DataWorker::insertCpu(int metricId, float value)
 {
+    if (!_connection && !connectToMysql())
+    {
+        //TODO add log        
+        return false;
+    }
+
     std::stringstream request;
     std::unique_ptr<sql::Statement> statement(_connection->createStatement());
 
     request << "INSERT INTO cpu(metric_id, value) VALUES('"
         << metricId << "', '" << value << "')";
-    statement->execute("USE crossover");
-    statement->execute(request.str());
+    if (!statement->execute("USE crossover"))
+    {
+        //TODO add log
+        return false;
+    }
+    if (!statement->execute(request.str()))
+    {
+        //TODO add log
+        return false;
+    }
+    return true;
 }
 
-void DataWorker::insertProcesses(int metricId, int value)
+bool DataWorker::insertProcesses(int metricId, int value)
 {
+    if (!_connection && !connectToMysql())
+    {
+        //TODO add log        
+        return false;
+    }
+
     std::stringstream request;
     std::unique_ptr<sql::Statement> statement(_connection->createStatement());
 
     request << "INSERT INTO processes(metric_id, value) VALUES('"
         << metricId << "', '" << value << "')";
-    statement->execute("USE crossover");
-    statement->execute(request.str());
+    if (!statement->execute("USE crossover"))
+    {
+        //TODO add log
+        return false;        
+    }
+    if (!statement->execute(request.str()))
+    {
+        //TODO add log
+        return false;
+    }
+    return true;
 }
